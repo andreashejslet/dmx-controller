@@ -1,24 +1,10 @@
 {
-“name”: “DMX Controller Pro”,
-“short_name”: “DMX”,
-“description”: “Professionel DMX lyscontroller til gudstjenester og events”,
-“start_url”: “/”,
-“display”: “standalone”,
-“background_color”: “#0f0c29”,
-“theme_color”: “#3b82f6”,
-“orientation”: “portrait”,
-“icons”: [
-{
-“src”: “icon-192.png”,
-“sizes”: “192x192”,
-“type”: “image/png”,
-“purpose”: “any maskable”
-},
-{
-“src”: “icon-512.png”,
-“sizes”: “512x512”,
-“type”: “image/png”,
-“purpose”: “any maskable”
-}
-]
+  "name": "DMX Controller Pro",
+  "short_name": "DMX",
+  "description": "Professionel DMX lyscontroller",
+  "start_url": "/dmx-controller/",
+  "display": "standalone",
+  "background_color": "#0f0c29",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait"
 }
