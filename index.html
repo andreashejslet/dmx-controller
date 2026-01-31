@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DMX Control">
+  <title>DMX Controller Pro</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+```
+:root {
+  --bg-primary: #0f0c29;
+  --bg-secondary: #302b63;
+  --bg-tertiary: #24243e;
+  --accent-blue: #3b82f6;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+  --accent-orange: #f59e0b;
+  --accent-purple: #8b5cf6;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+  color: white;
+  min-height: 100vh;
+  padding-bottom: 80px;
+  overflow-x: hidden;
+}
+
+.header {
+  background: rgba(0,0,0,0.5);
+  padding: 15px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.header h1 {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  font-size: 24px;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab {
+  padding: 12px 24px;
+  background: rgba(255,255,255,0.05);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.tab.active {
+  background: var(--accent-blue);
+  transform: translateY(-2px);
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.card h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 10px;
+  color: white;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.song-list {
+  display: grid;
+  gap: 10px;
+}
+
+.song-item {
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.song-item:active {
+  transform: translateX(3px);
+}
+
+.song-item.active {
+  background: rgba(59,130,246,0.2);
+  border-left-color: var(--accent-blue);
+  box-shadow: 0 0 20px rgba(59,130,246,0.3);
+}
+
+.song-num {
+  display: inline-block;
+  background: rgba(255,255,255,0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.song-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.song-desc {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.now-playing {
+  background: rgba(34,197,94,0.15);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 2px solid var(--accent-green);
+}
+
+.slide-info {
+  background: rgba(59,130,246,0.15);
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 14px;
+  border-left: 3px solid var(--accent-blue);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.controls-full {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.slider-group {
+  margin: 15px 0;
+}
+
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 40px;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type="range"]::-webkit-slider-track {
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  cursor: pointer;
+  margin-top: -8px;
+}
+
+.color-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.color-btn {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.color-btn:active {
+  transform: scale(0.9);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.9);
+  backdrop-filter: blur(10px);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  z-index: 99;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6b7280;
+}
+
+.status-dot.connected {
+  background: var(--accent-green);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.connection-panel {
+  background: rgba(59,130,246,0.1);
+  border: 2px solid var(--accent-blue);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+input[type="text"], input[type="number"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: white;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+.channel-panel {
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 3px solid;
+}
+
+.channel-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 60px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 6px;
+}
+
+.install-prompt {
+  background: rgba(34,197,94,0.15);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--accent-green);
+  display: none;
+}
+
+.install-prompt.show {
+  display: block;
+}
+```
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>💡 DMX Controller Pro</h1>
+    <button class="menu-btn" onclick="openMenu()">☰</button>
+  </div>
+
+  <div class="container">
+    <div id="installPrompt" class="install-prompt">
+      <strong>💡 Tip:</strong> Tilføj til hjemmeskærmen for bedste oplevelse!<br>
+      Safari → Del → "Tilføj til hjemmeskærm"
+      <button class="btn" style="background: var(--accent-green); margin-top: 10px;" onclick="closeInstallPrompt()">OK</button>
+    </div>
+
+```
+<div class="tabs">
+  <button class="tab active" onclick="switchTab(0)">Setliste</button>
+  <button class="tab" onclick="switchTab(1)">Kontrol</button>
+  <button class="tab" onclick="switchTab(2)">Effekter</button>
+  <button class="tab" onclick="switchTab(3)">Overblik</button>
+</div>
+
+<!-- Setliste Tab -->
+<div id="tab0" class="tab-content active">
+  <div class="card">
+    <div id="nowPlaying" class="now-playing" style="display:none">
+      <div style="font-size: 20px; font-weight: bold; margin-bottom: 8px;" id="npTitle"></div>
+      <div style="opacity: 0.8; font-size: 14px; margin-bottom: 15px;" id="npDesc"></div>
+      <div id="slideInfo" class="slide-info" style="display:none"></div>
+      <div class="controls" id="controls">
+        <button class="btn" style="background: var(--accent-red)" onclick="stopSong()">Stop</button>
+        <button class="btn" style="background: var(--accent-green)" onclick="nextSlide()">Næste</button>
+      </div>
+      <div class="controls-full" id="controlsFull" style="display:none">
+        <button class="btn" style="background: var(--accent-orange)" onclick="prevSlide()">← Forrige</button>
+        <button class="btn" style="background: var(--accent-blue)" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+        <button class="btn" style="background: var(--accent-green)" onclick="nextSlide()">Næste →</button>
+        <button class="btn" style="background: var(--accent-red)" onclick="stopSong()">⏹ Stop</button>
+      </div>
+    </div>
+
+    <h2>📋 Setliste</h2>
+    <div class="song-list" id="songList"></div>
+  </div>
+</div>
+
+<!-- Kontrol Tab -->
+<div id="tab1" class="tab-content">
+  <div class="card">
+    <h2>💡 Frontlys</h2>
+    <div class="connection-panel">
+      <strong>White Par (DMX <span id="frontDmx1">161</span> + <span id="frontDmx2">177</span>)</strong>
+      <p style="opacity:0.7;font-size:13px;margin-top:5px">Forbliver tændt under showet</p>
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label"><span>❄️ Kold Hvid</span><span id="coldVal">23</span></div>
+      <input type="range" min="0" max="255" value="23" id="coldSlider" oninput="updateFrontlight()">
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label"><span>🔥 Varm Hvid</span><span id="warmVal">153</span></div>
+      <input type="range" min="0" max="255" value="153" id="warmSlider" oninput="updateFrontlight()">
+    </div>
+
+    <div class="grid-2">
+      <button class="btn" style="background: var(--accent-orange)" onclick="setFrontPreset(23,153)">Varm</button>
+      <button class="btn" style="background: var(--accent-blue)" onclick="setFrontPreset(153,23)">Kold</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎨 Farver</h2>
+    <p id="selectedInfo" style="opacity:0.7;margin-bottom:15px"></p>
+    
+    <div class="color-picker">
+      <div class="color-btn" style="background:#ff0000" onclick="setColor(255,0,0)"></div>
+      <div class="color-btn" style="background:#00ff00" onclick="setColor(0,255,0)"></div>
+      <div class="color-btn" style="background:#0000ff" onclick="setColor(0,0,255)"></div>
+      <div class="color-btn" style="background:#ffff00" onclick="setColor(255,255,0)"></div>
+      <div class="color-btn" style="background:#ff00ff" onclick="setColor(255,0,255)"></div>
+      <div class="color-btn" style="background:#00ffff" onclick="setColor(0,255,255)"></div>
+      <div class="color-btn" style="background:#ffffff" onclick="setColor(255,255,255)"></div>
+      <div class="color-btn" style="background:#ff8800" onclick="setColor(255,136,0)"></div>
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label"><span>🔴 Rød</span><span id="redVal">0</span></div>
+      <input type="range" min="0" max="255" value="0" id="redSlider" oninput="updateRGB()">
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label"><span>🟢 Grøn</span><span id="greenVal">0</span></div>
+      <input type="range" min="0" max="255" value="0" id="greenSlider" oninput="updateRGB()">
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-label"><span>🔵 Blå</span><span id="blueVal">0</span></div>
+      <input type="range" min="0" max="255" value="0" id="blueSlider" oninput="updateRGB()">
+    </div>
+  </div>
+</div>
+
+<!-- Effekter Tab -->
+<div id="tab2" class="tab-content">
+  <div class="card">
+    <h2>✨ Lyseffekter</h2>
+    <p style="opacity:0.7;margin-bottom:15px">Effekter kører automatisk med sangene</p>
+    <button class="btn" style="background: var(--accent-purple)" onclick="alert('Effekter styres automatisk fra setlisten!')">ℹ️ Info</button>
+  </div>
+</div>
+
+<!-- Overblik Tab -->
+<div id="tab3" class="tab-content">
+  <div class="card">
+    <h2>📊 Lampe Overblik</h2>
+    <div id="fixtureOverview"></div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- Menu Modal -->
+
+  <div class="modal" id="menuModal">
+    <div class="modal-content">
+      <h2 style="margin-bottom: 20px;">⚙️ Menu</h2>
+      <button class="btn" style="background: var(--accent-blue)" onclick="openConnection()">🔌 ESP32 Forbindelse</button>
+      <button class="btn" style="background: var(--accent-purple)" onclick="openFixtureSetup()">🎭 Lampe Setup</button>
+      <button class="btn" style="background: var(--accent-green)" onclick="saveAll()">💾 Gem Alt</button>
+      <button class="btn" style="background: #6b7280" onclick="closeMenu()">✖️ Luk</button>
+    </div>
+  </div>
+
+  <!-- Connection Modal -->
+
+  <div class="modal" id="connectionModal">
+    <div class="modal-content">
+      <h2 style="margin-bottom: 20px;">🔌 ESP32 Forbindelse</h2>
+      <label>ESP32 IP Adresse:</label>
+      <input type="text" id="espIP" placeholder="f.eks. 192.168.1.100" value="">
+      <button class="btn" style="background: var(--accent-green)" onclick="testConnection()">Test Forbindelse</button>
+      <button class="btn" style="background: var(--accent-blue)" onclick="saveConnection()">Gem</button>
+      <button class="btn" style="background: #6b7280" onclick="closeConnection()">Annuller</button>
+      <p id="connectionStatus" style="margin-top: 15px; text-align: center;"></p>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-indicator">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Ikke forbundet</span>
+    </div>
+    <div style="font-size:12px;opacity:0.7">PWA v1.0</div>
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
