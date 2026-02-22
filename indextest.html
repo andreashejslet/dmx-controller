@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MakeLight – Setlist</title>
+
+<style>
+body {
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: radial-gradient(circle at center, #3c1a5b 0%, #140824 60%, #0b0616 100%);
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  color:white;
+  overflow:hidden;
+}
+
+.phone {
+  width:390px;
+  height:780px;
+  border-radius:40px;
+  overflow:hidden;
+  position:relative;
+  background: radial-gradient(circle at 50% 35%, #4c2175 0%, #1a0d2d 70%);
+  box-shadow: 0 0 60px rgba(140,80,255,0.4);
+}
+
+.header {
+  text-align:center;
+  padding-top:40px;
+  font-size:22px;
+  letter-spacing:1px;
+  opacity:0.9;
+}
+
+.song-wheel {
+  position:absolute;
+  top:140px;
+  width:100%;
+  text-align:center;
+}
+
+.song {
+  font-size:18px;
+  opacity:0.4;
+  margin:10px 0;
+}
+
+.song.active {
+  font-size:42px;
+  opacity:1;
+  font-weight:600;
+  text-shadow:0 0 25px rgba(200,150,255,0.9);
+}
+
+.artist {
+  font-size:16px;
+  opacity:0.7;
+  margin-top:8px;
+}
+
+.circle-container {
+  position:absolute;
+  bottom:220px;
+  left:50%;
+  transform:translateX(-50%);
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  background: radial-gradient(circle, #5a2e9f 0%, #2b1250 70%);
+  box-shadow:
+    0 0 60px rgba(160,100,255,0.8),
+    inset 0 -40px 80px rgba(0,0,0,0.5);
+}
+
+.band-ring {
+  position:absolute;
+  bottom:180px;
+  left:50%;
+  transform:translateX(-50%);
+  width:360px;
+  height:120px;
+  border-radius:60px;
+  background: linear-gradient(to bottom, rgba(140,80,255,0.6), rgba(60,20,100,0.9));
+  box-shadow:0 0 30px rgba(180,120,255,0.8);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+.section-wheel {
+  display:flex;
+  align-items:center;
+  transition:transform 0.3s ease;
+}
+
+.section {
+  padding:10px 18px;
+  margin:0 8px;
+  border-radius:30px;
+  font-size:14px;
+  background:rgba(255,255,255,0.08);
+  opacity:0.6;
+  white-space:nowrap;
+  transition: all 0.3s ease;
+}
+
+.section.active {
+  background:linear-gradient(90deg,#7c3aed,#a78bfa);
+  opacity:1;
+  box-shadow:0 0 20px rgba(180,120,255,0.9);
+}
+
+.footer-space {
+  position:absolute;
+  bottom:40px;
+  width:100%;
+  text-align:center;
+  font-size:12px;
+  opacity:0.3;
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="header">Setlist</div>
+
+  <div class="song-wheel">
+    <div class="song">Gospel Medley</div>
+    <div class="song">I Østen Stiger</div>
+
+    <div class="song active">HUMAN</div>
+    <div class="artist">Rag’n’Bone Man</div>
+
+    <div class="song">Beautiful Thing</div>
+    <div class="song">Hallelujah</div>
+  </div>
+
+  <div class="circle-container"></div>
+
+  <div class="band-ring">
+    <div class="section-wheel" id="wheel">
+      <div class="section">INTRO</div>
+      <div class="section">VERSE</div>
+      <div class="section active">CHORUS</div>
+      <div class="section">VERSE</div>
+      <div class="section">CHORUS</div>
+      <div class="section">BRIDGE</div>
+      <div class="section">OUTRO</div>
+    </div>
+  </div>
+
+  <div class="footer-space">Swipe left/right on sections</div>
+</div>
+
+<script>
+const wheel = document.getElementById("wheel");
+const sections = document.querySelectorAll(".section");
+let current = 2;
+let startX = 0;
+
+function updateActive() {
+  sections.forEach(s => s.classList.remove("active"));
+  sections[current].classList.add("active");
+  wheel.style.transform = `translateX(${-(current * 110 - 110)}px)`;
+}
+
+document.addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
+});
+
+document.addEventListener("touchend", e => {
+  let endX = e.changedTouches[0].clientX;
+  if(endX < startX - 30 && current < sections.length-1) {
+    current++;
+  }
+  if(endX > startX + 30 && current > 0) {
+    current--;
+  }
+  updateActive();
+});
+
+updateActive();
+</script>
+
+</body>
+</html>
