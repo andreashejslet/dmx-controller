@@ -1,191 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MakeLight – Setlist</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MakeLight Rotary UI</title>
 
 <style>
 body {
-  margin:0;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background: radial-gradient(circle at center, #3c1a5b 0%, #140824 60%, #0b0616 100%);
+  margin: 0;
+  background: radial-gradient(circle at center, #0f1c2b, #081018);
+  overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  color:white;
-  overflow:hidden;
+  color: white;
 }
 
-.phone {
-  width:390px;
-  height:780px;
-  border-radius:40px;
-  overflow:hidden;
-  position:relative;
-  background: radial-gradient(circle at 50% 35%, #4c2175 0%, #1a0d2d 70%);
-  box-shadow: 0 0 60px rgba(140,80,255,0.4);
+.app {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
 }
 
-.header {
-  text-align:center;
-  padding-top:40px;
-  font-size:22px;
-  letter-spacing:1px;
-  opacity:0.9;
+/* Mini MakeLight icon */
+.logo-mini {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00c6ff, #6f00ff);
+  box-shadow: 0 0 15px rgba(0,200,255,0.6);
 }
 
-.song-wheel {
-  position:absolute;
-  top:140px;
-  width:100%;
-  text-align:center;
+/* 3D Rotary */
+.rotary-wrapper {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  transform-style: preserve-3d;
+}
+
+.rotary {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease-out;
 }
 
 .song {
-  font-size:18px;
-  opacity:0.4;
-  margin:10px 0;
+  position: absolute;
+  width: 220px;
+  left: 30px;
+  padding: 14px;
+  text-align: center;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: 0.3s;
 }
 
 .song.active {
-  font-size:42px;
-  opacity:1;
-  font-weight:600;
-  text-shadow:0 0 25px rgba(200,150,255,0.9);
-}
-
-.artist {
-  font-size:16px;
-  opacity:0.7;
-  margin-top:8px;
-}
-
-.circle-container {
-  position:absolute;
-  bottom:220px;
-  left:50%;
-  transform:translateX(-50%);
-  width:280px;
-  height:280px;
-  border-radius:50%;
-  background: radial-gradient(circle, #5a2e9f 0%, #2b1250 70%);
-  box-shadow:
-    0 0 60px rgba(160,100,255,0.8),
-    inset 0 -40px 80px rgba(0,0,0,0.5);
-}
-
-.band-ring {
-  position:absolute;
-  bottom:180px;
-  left:50%;
-  transform:translateX(-50%);
-  width:360px;
-  height:120px;
-  border-radius:60px;
-  background: linear-gradient(to bottom, rgba(140,80,255,0.6), rgba(60,20,100,0.9));
-  box-shadow:0 0 30px rgba(180,120,255,0.8);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-}
-
-.section-wheel {
-  display:flex;
-  align-items:center;
-  transition:transform 0.3s ease;
-}
-
-.section {
-  padding:10px 18px;
-  margin:0 8px;
-  border-radius:30px;
-  font-size:14px;
-  background:rgba(255,255,255,0.08);
-  opacity:0.6;
-  white-space:nowrap;
-  transition: all 0.3s ease;
-}
-
-.section.active {
-  background:linear-gradient(90deg,#7c3aed,#a78bfa);
-  opacity:1;
-  box-shadow:0 0 20px rgba(180,120,255,0.9);
-}
-
-.footer-space {
-  position:absolute;
-  bottom:40px;
-  width:100%;
-  text-align:center;
-  font-size:12px;
-  opacity:0.3;
+  background: linear-gradient(135deg, #00c6ff, #6f00ff);
+  box-shadow: 0 0 25px rgba(0,200,255,0.7);
+  transform: scale(1.1);
 }
 </style>
 </head>
+
 <body>
+<div class="logo-mini"></div>
 
-<div class="phone">
-  <div class="header">Setlist</div>
-
-  <div class="song-wheel">
-    <div class="song">Gospel Medley</div>
-    <div class="song">I Østen Stiger</div>
-
-    <div class="song active">HUMAN</div>
-    <div class="artist">Rag’n’Bone Man</div>
-
-    <div class="song">Beautiful Thing</div>
-    <div class="song">Hallelujah</div>
-  </div>
-
-  <div class="circle-container"></div>
-
-  <div class="band-ring">
-    <div class="section-wheel" id="wheel">
-      <div class="section">INTRO</div>
-      <div class="section">VERSE</div>
-      <div class="section active">CHORUS</div>
-      <div class="section">VERSE</div>
-      <div class="section">CHORUS</div>
-      <div class="section">BRIDGE</div>
-      <div class="section">OUTRO</div>
+<div class="app">
+  <div class="rotary-wrapper">
+    <div class="rotary" id="rotary">
+      <div class="song">Neon Horizon</div>
+      <div class="song">Midnight Pulse</div>
+      <div class="song">Silver Echo</div>
+      <div class="song">Electric Sky</div>
+      <div class="song">Ocean Drive</div>
+      <div class="song">Starlight Run</div>
     </div>
   </div>
-
-  <div class="footer-space">Swipe left/right on sections</div>
 </div>
 
 <script>
-const wheel = document.getElementById("wheel");
-const sections = document.querySelectorAll(".section");
-let current = 2;
-let startX = 0;
+const rotary = document.getElementById("rotary");
+const items = document.querySelectorAll(".song");
 
-function updateActive() {
-  sections.forEach(s => s.classList.remove("active"));
-  sections[current].classList.add("active");
-  wheel.style.transform = `translateX(${-(current * 110 - 110)}px)`;
+const radius = 180;
+const itemCount = items.length;
+const angleStep = 360 / itemCount;
+
+let currentRotation = 0;
+let isDragging = false;
+let startY = 0;
+
+function positionItems() {
+  items.forEach((item, i) => {
+    const angle = i * angleStep;
+    item.style.transform =
+      `rotateX(${angle}deg) translateZ(${radius}px)`;
+  });
 }
 
-document.addEventListener("touchstart", e => {
-  startX = e.touches[0].clientX;
-});
+function updateActive() {
+  let normalized = ((currentRotation % 360) + 360) % 360;
+  let index = Math.round(normalized / angleStep) % itemCount;
 
-document.addEventListener("touchend", e => {
-  let endX = e.changedTouches[0].clientX;
-  if(endX < startX - 30 && current < sections.length-1) {
-    current++;
-  }
-  if(endX > startX + 30 && current > 0) {
-    current--;
-  }
+  items.forEach(item => item.classList.remove("active"));
+  items[index].classList.add("active");
+}
+
+function rotateTo(rotation) {
+  currentRotation = rotation;
+  rotary.style.transform = `rotateX(${rotation}deg)`;
   updateActive();
+}
+
+positionItems();
+updateActive();
+
+/* Drag support */
+document.addEventListener("mousedown", e => {
+  isDragging = true;
+  startY = e.clientY;
 });
 
-updateActive();
+document.addEventListener("mousemove", e => {
+  if (!isDragging) return;
+  let delta = e.clientY - startY;
+  rotateTo(currentRotation + delta * 0.5);
+  startY = e.clientY;
+});
+
+document.addEventListener("mouseup", () => {
+  isDragging = false;
+});
+
+/* Touch support */
+document.addEventListener("touchstart", e => {
+  startY = e.touches[0].clientY;
+});
+
+document.addEventListener("touchmove", e => {
+  let delta = e.touches[0].clientY - startY;
+  rotateTo(currentRotation + delta * 0.5);
+  startY = e.touches[0].clientY;
+});
 </script>
 
 </body>
