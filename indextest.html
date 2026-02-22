@@ -3,46 +3,47 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MakeLight Rotary UI</title>
+<title>MakeLight – Setlist</title>
 
 <style>
 body {
   margin: 0;
   background: radial-gradient(circle at center, #0f1c2b, #081018);
-  overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   color: white;
+  overflow: hidden;
 }
 
-.app {
-  height: 100vh;
+/* CENTER CIRCLE */
+.center-circle {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00c6ff, #6f00ff);
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1200px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+  box-shadow: 0 0 40px rgba(0,200,255,0.5);
 }
 
-/* Mini MakeLight icon */
-.logo-mini {
+/* 3D BAND */
+.band-wrapper {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #00c6ff, #6f00ff);
-  box-shadow: 0 0 15px rgba(0,200,255,0.6);
+  bottom: 20%;
+  width: 100%;
+  height: 140px;
+  perspective: 1200px;
+  overflow: visible;
 }
 
-/* 3D Rotary */
-.rotary-wrapper {
-  position: relative;
-  width: 280px;
-  height: 280px;
-  transform-style: preserve-3d;
-}
-
-.rotary {
+.band {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -50,106 +51,108 @@ body {
   transition: transform 0.2s ease-out;
 }
 
-.song {
+.form-item {
   position: absolute;
-  width: 220px;
-  left: 30px;
-  padding: 14px;
+  top: 30px;
+  left: 50%;
+  width: 120px;
+  margin-left: -60px;
+  padding: 12px;
   text-align: center;
-  border-radius: 16px;
+  border-radius: 14px;
   background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.1);
   transition: 0.3s;
 }
 
-.song.active {
-  background: linear-gradient(135deg, #00c6ff, #6f00ff);
-  box-shadow: 0 0 25px rgba(0,200,255,0.7);
-  transform: scale(1.1);
+.form-item.active {
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 0 20px rgba(0,200,255,0.5);
+  transform: scale(1.15);
 }
 </style>
 </head>
-
 <body>
-<div class="logo-mini"></div>
 
-<div class="app">
-  <div class="rotary-wrapper">
-    <div class="rotary" id="rotary">
-      <div class="song">Neon Horizon</div>
-      <div class="song">Midnight Pulse</div>
-      <div class="song">Silver Echo</div>
-      <div class="song">Electric Sky</div>
-      <div class="song">Ocean Drive</div>
-      <div class="song">Starlight Run</div>
-    </div>
+<div class="center-circle" id="songTitle">
+Neon Horizon
+</div>
+
+<div class="band-wrapper">
+  <div class="band" id="band">
+    <div class="form-item">Intro</div>
+    <div class="form-item">Verse</div>
+    <div class="form-item">Pre</div>
+    <div class="form-item">Chorus</div>
+    <div class="form-item">Verse 2</div>
+    <div class="form-item">Bridge</div>
+    <div class="form-item">Final</div>
   </div>
 </div>
 
 <script>
-const rotary = document.getElementById("rotary");
-const items = document.querySelectorAll(".song");
+const band = document.getElementById("band");
+const items = document.querySelectorAll(".form-item");
+const title = document.getElementById("songTitle");
 
-const radius = 180;
-const itemCount = items.length;
-const angleStep = 360 / itemCount;
+const radius = 220;
+const count = items.length;
+const angleStep = 360 / count;
 
-let currentRotation = 0;
-let isDragging = false;
-let startY = 0;
+let rotation = 0;
+let startX = 0;
 
 function positionItems() {
   items.forEach((item, i) => {
     const angle = i * angleStep;
     item.style.transform =
-      `rotateX(${angle}deg) translateZ(${radius}px)`;
+      `rotateY(${angle}deg) translateZ(${radius}px)`;
   });
 }
 
 function updateActive() {
-  let normalized = ((currentRotation % 360) + 360) % 360;
-  let index = Math.round(normalized / angleStep) % itemCount;
+  let normalized = ((rotation % 360) + 360) % 360;
+  let index = Math.round(normalized / angleStep) % count;
 
   items.forEach(item => item.classList.remove("active"));
   items[index].classList.add("active");
 }
 
-function rotateTo(rotation) {
-  currentRotation = rotation;
-  rotary.style.transform = `rotateX(${rotation}deg)`;
+function rotateTo(val) {
+  rotation = val;
+  band.style.transform = `rotateY(${rotation}deg)`;
   updateActive();
 }
 
 positionItems();
 updateActive();
 
-/* Drag support */
+/* DRAG */
 document.addEventListener("mousedown", e => {
-  isDragging = true;
-  startY = e.clientY;
+  startX = e.clientX;
 });
 
 document.addEventListener("mousemove", e => {
-  if (!isDragging) return;
-  let delta = e.clientY - startY;
-  rotateTo(currentRotation + delta * 0.5);
-  startY = e.clientY;
+  if (startX === null) return;
+  let delta = e.clientX - startX;
+  rotateTo(rotation + delta * 0.4);
+  startX = e.clientX;
 });
 
 document.addEventListener("mouseup", () => {
-  isDragging = false;
+  startX = null;
 });
 
-/* Touch support */
+/* TOUCH */
 document.addEventListener("touchstart", e => {
-  startY = e.touches[0].clientY;
+  startX = e.touches[0].clientX;
 });
 
 document.addEventListener("touchmove", e => {
-  let delta = e.touches[0].clientY - startY;
-  rotateTo(currentRotation + delta * 0.5);
-  startY = e.touches[0].clientY;
+  let delta = e.touches[0].clientX - startX;
+  rotateTo(rotation + delta * 0.4);
+  startX = e.touches[0].clientX;
 });
 </script>
 
